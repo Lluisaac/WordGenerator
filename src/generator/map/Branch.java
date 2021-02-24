@@ -1,8 +1,11 @@
-package generator;
+package generator.map;
 
 import java.util.Map;
 
-public class Branch<T> extends WeightedProbabilisticMap<T>
+import generator.Tree;
+import generator.Word;
+
+public abstract class Branch<T> extends WeightedProbabilisticMap<T>
 {
 	protected Tree<T> tree;
 
@@ -70,4 +73,26 @@ public class Branch<T> extends WeightedProbabilisticMap<T>
 
 		return str;
 	}
+
+	@Override
+	public void buildFromString(String str)
+	{
+		String[] entries = str.split(";");
+
+		int sum = 0;
+
+		for (String entry : entries)
+		{
+			T key = this.parse(entry.split("-")[0]);
+			Integer value = Integer.parseInt(entry.split("-")[1]);
+
+			this.leafs.put(key, value);
+
+			sum += value;
+		}
+		
+		this.weight = sum;
+	}
+
+	public abstract T parse(String string);
 }

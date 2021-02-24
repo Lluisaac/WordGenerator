@@ -1,14 +1,14 @@
-package generator;
+package generator.map;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class WeightedProbabilisticMap<T>
+public abstract class WeightedProbabilisticMap<T>
 {
-	private Map<T, Integer> leafs;
+	protected Map<T, Integer> leafs;
 
-	private int weight;
+	protected int weight;
 
 	private Random rand;
 
@@ -81,8 +81,5 @@ public class WeightedProbabilisticMap<T>
 		return this.weight;
 	}
 
-	public void buildFromString(String wordSizeMapString)
-	{
-		//TODO
-	}
+	public abstract void buildFromString(String str);
 }

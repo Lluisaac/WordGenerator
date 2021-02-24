@@ -1,6 +1,9 @@
-package generator;
+package generator.map;
 
-public class InitialBranch<T> extends Branch<T>
+import generator.Tree;
+import generator.Word;
+
+public abstract class InitialBranch<T> extends Branch<T>
 {
 	public InitialBranch(Tree<T> tree)
 	{

@@ -102,5 +102,14 @@ public class Word<T>
 		
 		return str;
 	}
-
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj.getClass().equals(Word.class)) {
+			return ((Word<?>) obj).symbols.equals(this.symbols);
+		} else {
+			return false;
+		}
+	}
 }

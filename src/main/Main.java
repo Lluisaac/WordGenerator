@@ -5,29 +5,33 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import generator.Tree;
 import generator.Word;
+import generator.character.CharacterTree;
 
 public class Main
 {
+	
 	public static void main(String[] args)
 	{
-		Tree<Character> tree = buildTree();
-		tree = importTree();
+		Tree<Character> tree;
+		tree = buildTree();
+		//tree = importTree(new Random());
 		
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 500; i++) {
 			System.out.println(tree.makeWord());
 		}
 	}
 
 	private static Tree<Character> buildTree()
 	{
-		Tree<Character> tree = new Tree<Character>(new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}, '$', '#');
+		Tree<Character> tree = new CharacterTree(new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}, '$', '#');
 		
 		try
 		{
-			BufferedReader reader = new BufferedReader(new FileReader("words_alpha.txt"));
+			BufferedReader reader = new BufferedReader(new FileReader("words.txt"));
 			String str;
 			while ((str = reader.readLine()) != null)
 			{
@@ -56,9 +60,9 @@ public class Main
 		return tree;
 	}
 
-	private static Tree<Character> importTree()
+	private static Tree<Character> importTree(Random rand)
 	{
-		Tree<Character> tree = new Tree<Character>(new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}, '$', '#');
+		Tree<Character> tree = new CharacterTree(rand, new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}, '$', '#');
 
 		try
 		{

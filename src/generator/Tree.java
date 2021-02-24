@@ -5,39 +5,45 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Random;
 
-public class Tree <T>
+import generator.map.Branch;
+import generator.map.InitialBranch;
+import generator.map.IntegerWeightedProbabilisticMap;
+import generator.map.WeightedProbabilisticMap;
+
+public abstract class Tree<T>
 {
 	private Random rand;
-	
+
 	private Branch<T>[] branches;
-	
+
 	private WeightedProbabilisticMap<Integer> wordSizeMap;
-	
+
 	private T[] alphabet;
 	private T start;
 	private T end;
-	
+
 	private InitialBranch<T> root;
 
 	public Tree(T[] alphabet, T start, T end)
 	{
 		this(new Random(), alphabet, start, end);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public Tree(Random rand, T[] alphabet, T start, T end) {
+	public Tree(Random rand, T[] alphabet, T start, T end)
+	{
 
 		this.rand = rand;
 
 		this.branches = (Branch<T>[]) new Branch[(int) Math.pow(alphabet.length + 2, 2)];
-		
-		this.wordSizeMap = new WeightedProbabilisticMap<Integer>(this.rand);
-		
+
+		this.wordSizeMap = new IntegerWeightedProbabilisticMap(this.rand);
+
 		this.alphabet = alphabet;
 		this.start = start;
 		this.end = end;
-		
-		this.root = new InitialBranch<T>(this);
+
+		this.root = this.getNewInitialBranch(this);
 
 		buildBranches();
 	}
@@ -50,9 +56,10 @@ public class Tree <T>
 	public Word<T> makeWord(int maxSize)
 	{
 		Word<T> word;
-		
-		while((word = makeRandomWord()).length() > maxSize);
-		
+
+		while ((word = makeRandomWord()).length() > maxSize)
+			;
+
 		return word;
 	}
 
@@ -71,7 +78,7 @@ public class Tree <T>
 	public void insertWord(Word<T> word)
 	{
 		insertWordLength(word);
-		
+
 		T first = this.getStart();
 
 		T second = word.get(0);
@@ -108,7 +115,7 @@ public class Tree <T>
 
 		for (int i = 0; i < this.branches.length; i++)
 		{
-			this.branches[i] = new Branch<T>(tag, this);
+			this.branches[i] = this.getNewBranch(tag, this);
 			tag = getNextTag(tag);
 		}
 	}
@@ -162,15 +169,17 @@ public class Tree <T>
 
 	private int indexOf(T symbol)
 	{
-		for (int i = 0; i < this.alphabet.length; i++) {
-			if (this.alphabet[i].equals(symbol)) {
+		for (int i = 0; i < this.alphabet.length; i++)
+		{
+			if (this.alphabet[i].equals(symbol))
+			{
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 	public T nextChar(T symbol)
 	{
 		int val = getValueOf(symbol);
@@ -213,28 +222,31 @@ public class Tree <T>
 	{
 		return this.end;
 	}
-	
+
 	@Override
-	public String toString() 
+	public String toString()
 	{
 		String str = "";
-		
+
 		str += "wordSize:" + this.wordSizeMap + "\n";
+		str += "initial:" + this.root + "\n";
 		str += "branches:" + branchesToString() + "\n";
-		
+
 		return str;
 	}
 
 	private String branchesToString()
 	{
 		String str = "";
-		
-		for (int i = 0; i < this.branches.length; i++) {
-			if (branches[i].getWeight() > 0) {
-				str += branches[i] + "|";
+
+		for (int i = 0; i < this.branches.length; i++)
+		{
+			if (branches[i].getWeight() > 0)
+			{
+				str += branches[i] + "&";
 			}
 		}
-		
+
 		return str;
 	}
 
@@ -247,10 +259,47 @@ public class Tree <T>
 	{
 		String firstLine = file.readLine();
 		String secondLine = file.readLine();
-		
+		String thirdLine = file.readLine();
+
 		String wordSizeMapString = firstLine.split(":")[1];
 		this.wordSizeMap.buildFromString(wordSizeMapString);
+
+		String initialMapString = secondLine.split(":")[1];
+		buildInitial(initialMapString);
 		
-		//TODO Faire les branches
+		String branchesMapString = thirdLine.split(":")[1];
+		buildBranches(branchesMapString);
 	}
+
+	private void buildInitial(String initialMapString)
+	{
+		this.root.buildFromString(initialMapString.split(">")[1]);
+	}
+
+	private void buildBranches(String branchesMapString)
+	{
+		String[] wheightedBranches = branchesMapString.split("&");
+
+		int i = 0;
+
+		for (Branch<T> branch : this.branches)
+		{
+			if (i < wheightedBranches.length)
+			{
+				Word<T> tag = this.parse(wheightedBranches[i].split(">")[0]);
+
+				if (branch.getTag().equals(tag))
+				{
+					branch.buildFromString(wheightedBranches[i].split(">")[1]);
+					i++;
+				}
+			}
+		}
+	}
+
+	protected abstract Word<T> parse(String string);
+
+	protected abstract InitialBranch<T> getNewInitialBranch(Tree<T> tree);
+
+	protected abstract Branch<T> getNewBranch(Word<T> tag, Tree<T> tree);
 }
