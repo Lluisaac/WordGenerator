@@ -5,16 +5,16 @@ import generator.Word;
 
 public abstract class InitialBranch<T> extends Branch<T>
 {
-	public InitialBranch(Tree<T> tree)
-	{
-		super(getnewWord(tree), tree);
-	}
-
 	private static <T> Word<T> getnewWord(Tree<T> tree)
 	{
 		T start = tree.getStart();
 		Word<T> word = new Word<T>(start);
 		return word;
+	}
+
+	public InitialBranch(Tree<T> tree)
+	{
+		super(InitialBranch.getnewWord(tree), tree);
 	}
 
 	@Override

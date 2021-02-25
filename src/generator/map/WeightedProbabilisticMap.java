@@ -8,9 +8,9 @@ public abstract class WeightedProbabilisticMap<T>
 {
 	protected Map<T, Integer> leafs;
 
-	protected int weight;
-
 	private Random rand;
+
+	protected int weight;
 
 	public WeightedProbabilisticMap(Random rand)
 	{
@@ -22,7 +22,7 @@ public abstract class WeightedProbabilisticMap<T>
 
 	public void addBranch(T symbol)
 	{
-		if (!this.getLeafs().containsKey(symbol))
+		if(!this.getLeafs().containsKey(symbol))
 		{
 			this.getLeafs().put(symbol, 0);
 		}
@@ -32,19 +32,16 @@ public abstract class WeightedProbabilisticMap<T>
 		this.weight++;
 	}
 
-	public T getRandomElement()
-	{
-		return getElementFromWeight(this.getRand().nextInt(this.weight));
-	}
+	public abstract void buildFromString(String str);
 
 	private T getElementFromWeight(int value)
 	{
 		int sum = 0;
 
-		for (Map.Entry<T, Integer> entry : this.getLeafs().entrySet())
+		for(Map.Entry<T, Integer> entry : this.getLeafs().entrySet())
 		{
 			sum += entry.getValue();
-			if (sum >= value)
+			if(sum >= value)
 			{
 				return entry.getKey();
 			}
@@ -53,17 +50,9 @@ public abstract class WeightedProbabilisticMap<T>
 		return null;
 	}
 
-	@Override
-	public String toString()
+	public Map<T, Integer> getLeafs()
 	{
-		String str = "";
-
-		for (Map.Entry<T, Integer> entry : leafs.entrySet())
-		{
-			str += entry.getKey() + "-" + entry.getValue() + ";";
-		}
-
-		return str;
+		return this.leafs;
 	}
 
 	public Random getRand()
@@ -71,9 +60,9 @@ public abstract class WeightedProbabilisticMap<T>
 		return this.rand;
 	}
 
-	public Map<T, Integer> getLeafs()
+	public T getRandomElement()
 	{
-		return this.leafs;
+		return this.getElementFromWeight(this.getRand().nextInt(this.weight + 1));
 	}
 
 	public int getWeight()
@@ -81,5 +70,16 @@ public abstract class WeightedProbabilisticMap<T>
 		return this.weight;
 	}
 
-	public abstract void buildFromString(String str);
+	@Override
+	public String toString()
+	{
+		String str = "";
+
+		for(Map.Entry<T, Integer> entry : this.leafs.entrySet())
+		{
+			str += entry.getKey() + "-" + entry.getValue() + ";";
+		}
+
+		return str;
+	}
 }

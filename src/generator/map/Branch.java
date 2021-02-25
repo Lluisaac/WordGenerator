@@ -7,9 +7,9 @@ import generator.Word;
 
 public abstract class Branch<T> extends WeightedProbabilisticMap<T>
 {
-	protected Tree<T> tree;
-
 	protected Word<T> tag;
+
+	protected Tree<T> tree;
 
 	public Branch(T[] tag, Tree<T> tree)
 	{
@@ -23,9 +23,29 @@ public abstract class Branch<T> extends WeightedProbabilisticMap<T>
 		this.tag = tag;
 	}
 
-	public Word<T> getTag()
+	@Override
+	public void buildFromString(String str)
 	{
-		return this.tag;
+		String[] entries = str.split(";");
+
+		int sum = 0;
+
+		for(String entry : entries)
+		{
+			T key = this.parse(entry.split("-")[0]);
+			Integer value = Integer.parseInt(entry.split("-")[1]);
+
+			this.leafs.put(key, value);
+
+			sum += value;
+		}
+
+		this.weight = sum;
+	}
+
+	public Branch<T> findNextRandomBranch()
+	{
+		return this.getNewBranchWith(this.getRandomElement());
 	}
 
 	public T getLastLetter()
@@ -33,14 +53,17 @@ public abstract class Branch<T> extends WeightedProbabilisticMap<T>
 		return this.tag.getLast();
 	}
 
-	public Branch<T> findNextRandomBranch()
+	protected Branch<T> getNewBranchWith(T symbol)
 	{
-		return getNewBranchWith(getRandomElement());
+		Word<T> newTag = this.tag.getAllButFirst().add(symbol);
+		int index = this.tree.getTreeIndex(newTag);
+
+		return this.tree.getBranchAt(index);
 	}
 
-	public boolean isValid()
+	public Word<T> getTag()
 	{
-		return this.getWeight() > 0 || this.isLastBranch();
+		return this.tag;
 	}
 
 	public boolean isFirstBranch()
@@ -53,46 +76,23 @@ public abstract class Branch<T> extends WeightedProbabilisticMap<T>
 		return this.tag.getLast().equals(this.tree.getEnd());
 	}
 
-	protected Branch<T> getNewBranchWith(T symbol)
+	public boolean isValid()
 	{
-		Word<T> newTag = this.tag.getAllButFirst().add(symbol);
-		int index = this.tree.getTreeIndex(newTag);
-
-		return this.tree.getBranchAt(index);
+		return (this.getWeight() > 0) || this.isLastBranch();
 	}
+
+	public abstract T parse(String string);
 
 	@Override
 	public String toString()
 	{
 		String str = this.tag + ">";
 
-		for (Map.Entry<T, Integer> entry : this.getLeafs().entrySet())
+		for(Map.Entry<T, Integer> entry : this.getLeafs().entrySet())
 		{
 			str += entry.getKey() + "-" + entry.getValue() + ";";
 		}
 
 		return str;
 	}
-
-	@Override
-	public void buildFromString(String str)
-	{
-		String[] entries = str.split(";");
-
-		int sum = 0;
-
-		for (String entry : entries)
-		{
-			T key = this.parse(entry.split("-")[0]);
-			Integer value = Integer.parseInt(entry.split("-")[1]);
-
-			this.leafs.put(key, value);
-
-			sum += value;
-		}
-		
-		this.weight = sum;
-	}
-
-	public abstract T parse(String string);
 }

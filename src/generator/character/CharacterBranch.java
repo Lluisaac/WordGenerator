@@ -16,6 +16,7 @@ public class CharacterBranch extends Branch<Character>
 		super(tag, tree);
 	}
 
+	@Override
 	public Character parse(String str)
 	{
 		return str.charAt(0);

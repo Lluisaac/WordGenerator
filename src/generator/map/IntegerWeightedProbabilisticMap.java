@@ -17,7 +17,7 @@ public class IntegerWeightedProbabilisticMap extends WeightedProbabilisticMap<In
 
 		int sum = 0;
 
-		for (String entry : entries)
+		for(String entry : entries)
 		{
 			Integer key = Integer.parseInt(entry.split("-")[0]);
 			Integer value = Integer.parseInt(entry.split("-")[1]);
@@ -26,7 +26,7 @@ public class IntegerWeightedProbabilisticMap extends WeightedProbabilisticMap<In
 
 			sum += value;
 		}
-		
+
 		this.weight = sum;
 	}
 

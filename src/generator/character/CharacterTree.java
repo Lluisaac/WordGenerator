@@ -27,15 +27,15 @@ public class CharacterTree extends Tree<Character>
 	}
 
 	@Override
+	protected InitialBranch<Character> getNewInitialBranch(Tree<Character> tree)
+	{
+		return new CharacterInitialBranch(tree);
+	}
+
+	@Override
 	protected Word<Character> parse(String str)
 	{
 		return new Word<Character>(str.chars().mapToObj(c -> (char) c).toArray(Character[]::new));
 	}
 
-	@Override
-	protected InitialBranch<Character> getNewInitialBranch(Tree<Character> tree)
-	{
-		return new CharacterInitialBranch(tree);
-	}
-	
 }
