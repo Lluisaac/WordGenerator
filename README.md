@@ -12,10 +12,15 @@ java -jar WordGen.jar [-h] <n> <-b or -i> [input file] [output file]
 ```
 
 *-h*: This argument will print a help message and ignore all other arguments
+
 *n*: Mandatory argument to generate words, put a number that will be the number of words generated
+
 *-b*: Standard generation method, will use the file from the argument *input file* to get words to use
+
 *-i*: Only use after one use of *-b*, will use a more compact and quick mapping of the words given.
+
 *input file*: Only use with *-b*, the name of the file in which all the words have been put.
+
 *output file*: Optional, default is "words.txt", the file in which all the generated words will be written in.
 
 When the program has run, it will make a file "save.wg" which is a compact way to save the relevant content of all the words that have been given to the program. To speed up the process of launching the program or to compress the words list to a strictly relevant weight, you can launch using the *-i* argument.
